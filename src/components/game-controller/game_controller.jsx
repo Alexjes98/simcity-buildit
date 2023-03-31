@@ -10,13 +10,16 @@ export default function GameController () {
         happiness: 'test',
         simoleons: 'test'
     }
-    var mapGrid =  Array.from({ length: 35 }, () => Array.from({ length: 35 }, () => 0));
+    var mapGrid =  Array.from({ length: 45 }, () => Array.from({ length: 45 }, () => {return {visual: 0, effects: []}}));
+    
+    const eventHandler = () => {
+        
+    }
 
     return <div className='main-game-controller'>
         <Sidebar className="sidebar"></Sidebar>
         <StatsUI className='stats-main-row '  objProps={mainStats}></StatsUI>
-        
-        <Map className='main-content' mapGrid={mapGrid}></Map>
+        <Map className='main-content' mapGrid={mapGrid} events={eventHandler}></Map>
     </div>
 
 }

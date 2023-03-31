@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef} from 'react';
 import { Image } from 'react-bootstrap';
 
 import logo from '../../assets/ui/logo.png';
@@ -9,10 +9,16 @@ const sidebarNavItems = [
     icon: <i className='bx bx-home'></i>,
   },
   {
-    display: 'Orders',
+    display: 'Inventario',
     icon: <i className='bx bx-receipt'></i>,
-    to: '/order',
-    section: 'order'
+  },
+  {
+    display: 'Servicios',
+    icon: <i className='bx bx-receipt'></i>,
+  },
+  {
+    display: 'Especializaciones',
+    icon: <i className='bx bx-receipt'></i>,
   },
 ]
 

@@ -8,7 +8,7 @@ export default function Map(props) {
             <div className="map-grid" >
                 {row.map((value, colIndex) => (
                     <div key={`${rowIndex}-${colIndex}`} className="map-box">
-                        <MapBox value={{value: value, xIndex: rowIndex, yIndex: colIndex}} ></MapBox>
+                        <MapBox value={{value: value.visual, xIndex: rowIndex, yIndex: colIndex}} ></MapBox>
                     </div>
                 ))
                 }
