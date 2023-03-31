@@ -1,5 +1,6 @@
 import StatsUI from '../../components/ui/stats';
 import Map from '../map/map';
+import Sidebar from '../side-bar/side-bar';
 
 export default function GameController () {
     var mainStats = {
@@ -9,11 +10,13 @@ export default function GameController () {
         happiness: 'test',
         simoleons: 'test'
     }
-    var mapGrid =  Array.from({ length: 25 }, () => Array.from({ length: 25 }, () => 0));
+    var mapGrid =  Array.from({ length: 35 }, () => Array.from({ length: 35 }, () => 0));
 
     return <div className='main-game-controller'>
-        <StatsUI className='stats-container'  objProps={mainStats}></StatsUI>
-        <Map className='map-container' mapGrid={mapGrid}></Map>
+        <Sidebar className="sidebar"></Sidebar>
+        <StatsUI className='stats-main-row '  objProps={mainStats}></StatsUI>
+        
+        <Map className='main-content' mapGrid={mapGrid}></Map>
     </div>
 
 }

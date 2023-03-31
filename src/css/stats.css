@@ -1,11 +1,18 @@
-.stats-main-row{
-    left: 2px;
-    top: 2px;
-    z-index: 1;
-    background-color: gray;
-    display: grid;
-    grid-row: span;  
-}
+.stats-main-row {
+    position: fixed;
+    top: 0;
+    left: 120px;
+    right: 0;
+    height: 50px;
+    background-color: #333;
+    color: orange;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+    z-index: 2;
+  }
+  
 .stats-level{
     position: relative;
     color: white;    
