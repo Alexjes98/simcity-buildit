@@ -1,5 +1,4 @@
 .stats-main-row{
-    position: absolute;
     left: 2px;
     top: 2px;
     z-index: 1;
@@ -8,8 +7,10 @@
     grid-row: span;  
 }
 .stats-level{
-
     position: relative;
-    color: white;
-    
+    color: white;    
+}
+
+.stats-container{
+    position: relative;
 }

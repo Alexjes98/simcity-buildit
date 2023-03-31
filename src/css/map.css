@@ -1,0 +1,15 @@
+.map-copntainer {
+    position: relative;
+    left: 50%;
+    bottom: 50%;
+}
+.map-grid {
+    display: flex;
+    flex-direction: row;
+    border: 1px solid black;
+}
+
+.map-box {
+    border: 1px solid black;
+    
+}
