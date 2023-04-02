@@ -1,14 +1,16 @@
+import { useState} from "react";
 import MapBox from "./map-box";
 
 export default function Map(props) {
-    const { mapGrid } = props
+    const [mapGrid, setMapGrid] = useState(props.mapGrid)
+    const { setBlock } = props.events
 
     return (
         mapGrid.map((row, rowIndex) => (
-            <div className="map-grid" >
+            <div key={rowIndex} className="map-grid" >
                 {row.map((value, colIndex) => (
                     <div key={`${rowIndex}-${colIndex}`} className="map-box">
-                        <MapBox value={{value: value.visual, xIndex: rowIndex, yIndex: colIndex}} ></MapBox>
+                        <MapBox values={{ value: value.visual, xIndex: rowIndex, yIndex: colIndex, setBlock: setBlock }} ></MapBox>
                     </div>
                 ))
                 }

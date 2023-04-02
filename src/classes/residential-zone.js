@@ -1,4 +1,4 @@
-class ResidentialZone extends Building {
+export class ResidentialZone extends Building {
   constructor(name, maxPopulation, is_abandoned, services, especialities, happiness, negative_effects, upgrade_probability, construction_event, abandon_probability) {
     this.name = name;
     this.maxPopulation = maxPopulation;    
@@ -11,5 +11,4 @@ class ResidentialZone extends Building {
     this.construction_event = construction_event;
     this.abandon_probability = abandon_probability;
   }
-
 }

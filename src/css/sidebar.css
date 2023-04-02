@@ -10,6 +10,13 @@
     transition: transform 0.3s ease-in-out;
     z-index: 1;
 }
+.menu-icon{
+    padding: 5px;
+}
+.menu-icon:hover{
+    color: white;
+    cursor: pointer;
+}
 
 .side-bar-logo{
     width: 90%;
