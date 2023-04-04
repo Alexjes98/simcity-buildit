@@ -6,6 +6,8 @@ import { faHome, faIndustry, faRoad, faSnowplow, faArrowPointer } from '@fortawe
 
 import logo from '../../assets/ui/logo.png';
 import { useState } from 'react';
+import { Road } from '../../classes/road';
+import { ResidentialZone } from '../../classes/residential-zone';
 
 const sidebarNavItems = [
   {
@@ -13,14 +15,14 @@ const sidebarNavItems = [
     menuItems: [
       { name: "pointer", icon: faArrowPointer, value: -1 },
       { name: "delete", icon: faSnowplow, value: 0 },
-      { name: "road", icon: faRoad, value: 1 },
-      { name: "residential", icon: faHome, value: 2 },
-      { name: "factory", icon: faIndustry, value: 3 }
-    ]
-  },
-  {
-    display: 'Inventario',
-    menuItems: [
+      { name: "road", icon: faRoad, value: 1, class: new Road(0,10,0,false) },
+      { name: "residential", icon: faHome, value: 2, 
+      class: new ResidentialZone(
+        false,"residential",0,
+        "home",20,2,false,
+        [],[],[],[],0,[],0
+      ) },
+      { name: "factory", icon: faIndustry, value: 3}
     ]
   },
   {
@@ -28,6 +30,12 @@ const sidebarNavItems = [
     menuItems: [
     ]
   },
+  {
+    display: 'Inventario',
+    menuItems: [
+    ]
+  },
+  
   {
     display: 'Especializaciones',
     menuItems: [
@@ -52,7 +60,6 @@ const defineSelected = (value) => {
 
 export default function Sidebar(props) {
   const { setSelectedElement } = props.events;
-
   const [selectedIcon, setSelectedIcon] = useState(-1);
 
   return <div className='sidebar'>
@@ -74,7 +81,7 @@ export default function Sidebar(props) {
                 return <FontAwesomeIcon key={item.value}
                   className='menu-icon' icon={item.icon}
                   size='2x'
-                  onClick={() => { setSelectedElement(item.value); setSelectedIcon(item.value) }} />
+                  onClick={() => { setSelectedElement(item); setSelectedIcon(item.value) }} />
               })}
             </div>
           </div>
