@@ -1,6 +1,6 @@
 export class Road {
-    constructor(type,level, capacity, trafficJams, is_jammed, effects) {
-        this.type = type;
+    constructor(name,level, capacity, trafficJams, is_jammed, effects) {
+        this.name = name;
         this.level = level;
         this.capacity = capacity;
         this.trafficJams = trafficJams;

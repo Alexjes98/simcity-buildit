@@ -16,19 +16,19 @@ export default function MapBox(props) {
     const [value, setValue] = useState(props.values.value)
     const defineBlock = (value) => {
         switch (value) {
-            case 0:
+            case 'delete':
                 return grassImage;
-            case 1:
+            case 'road':
                 return routeImage;
-            case 2:
+            case 'residential':
                 return houseImage;
-            case 3:
+            case 'factory':
                 return factoryImage;
-            case 4: 
+            case 'police': 
                 return policeImage;
-            case 5:
+            case 'firehouse':
                 return fireHouseImage;
-            case 6:
+            case 'health':
                 return healthImage;
             default:
                 return noFound;

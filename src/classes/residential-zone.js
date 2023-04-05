@@ -1,7 +1,7 @@
 import { Building } from './building'
 export class ResidentialZone extends Building {
-  constructor(id,type_id,is_active, type, level, name, maxPopulation, actual_population, is_abandoned, effects, happiness, upgrade_probability, construction_event, abandon_probability) {
-    super(id,is_active, type, level,type_id);
+  constructor(id,type_id,is_active, type, level, name, maxPopulation, actual_population, is_abandoned, effects, happiness, upgrade_probability, construction_event) {
+    super(id,is_active, type, level,type_id,effects);
     this.name = name;
     this.maxPopulation = maxPopulation;
     this.actual_population = actual_population;
@@ -9,8 +9,7 @@ export class ResidentialZone extends Building {
     this.effects = effects;
     this.happiness = happiness;
     this.upgrade_probability = upgrade_probability;
-    this.construction_event = construction_event;
-    this.abandon_probability = abandon_probability;
+    this.construction_event = construction_event;    
   }
 
   requiredServices = [
@@ -54,9 +53,12 @@ export class ResidentialZone extends Building {
   definePopulation() {
 
   }
+
+  setIsActive(value){
+    this.is_active = value; 
+  }
   
   defineHappiness() {
-    console.log("HOUSE STATS")
     this.effects.forEach(effect => {
     });
 

@@ -5,13 +5,16 @@ import Map from '../map/map';
 import Sidebar from '../side-bar/side-bar';
 
 import { defaultMainStats, effectClass } from '../../constants/constants';
+import { __hash__ } from '../../utils/utils';
+import { newPoliceStation, newResidentialZone, newRoad } from '../../constants/defaultBuildings';
 
 export default function GameController() {
 
     const [mainStats, setMainStats] = useState(defaultMainStats)
 
-    var mapGrid = Array.from({ length: 15 }, () => Array.from({ length: 15 }, () => { return { value: 0, element: {}, class: {effects: []} } }));
-    var selectedElement = { name: "pointer", value: -1, class: {} }
+    var mapGrid = Array.from({ length: 15 }, () => Array.from({ length: 15 }, () => { return { name: 'delete', element: {}, effects: [] } }));
+    var selectedElement = { name: "pointer"}
+    var auxiliarElement = {};
 
     const setSelectedElement = (element) => {
         if(selectedElement === element) return;
@@ -20,59 +23,59 @@ export default function GameController() {
     }
 
     const setBlock = (xindex, yindex) => {
-        if (selectedElement.value === -1) return console.log(xindex,yindex,mapGrid[xindex][yindex].class.effects)
-        if (cantBuild(xindex, yindex)) return;
+        if (selectedElement.name === 'pointer') return console.log(xindex,yindex,mapGrid[xindex][yindex])
+        if (cantBuild(xindex, yindex)) return;  
         defineBuildingValues(xindex, yindex);
-        mapGrid[xindex][yindex] = selectedElement;
-        return selectedElement.value;
+        mapGrid[xindex][yindex] = auxiliarElement;
+        return selectedElement.name;
     }
 
     const cantBuild = (xindex, yindex) => {
-        if (mapGrid[xindex][yindex].value !== 0 && selectedElement.value !== 0) {
+        if (mapGrid[xindex][yindex].name !== 'delete' && selectedElement !== 'delete') {
             return true;
         }
         return false;
     }
 
     const defineBuildingValues = (xindex, yindex) => {
-        switch (selectedElement.class.type) {
+        switch (selectedElement.name) {
             case 'road':
-                console.log("ROAD")
+                auxiliarElement = newRoad()
                 definePositionEffects(xindex, yindex);
                 //TODO ACTIVATE ADJACENT BUILDINGS IF INACTIVE
                 break;
             case 'residential':
-                console.log("RESIDENTIAL")
+                auxiliarElement = newResidentialZone()
                 if (checkRoads(xindex, yindex)) {
+                    auxiliarElement.setIsActive(true)
                     definePositionEffects(xindex, yindex);
-                    selectedElement.class.defineHappiness();
-                    console.log(selectedElement.class.notCoveredServices())
+                    console.log(auxiliarElement.notCoveredServices())
                 }
                 break;
-            case 'service':
-                console.log("SERVICE")
+            case 'police':
+                auxiliarElement = newPoliceStation()
                 if (checkRoads(xindex, yindex)) {
-                    addEffects(xindex, yindex, selectedElement.class.cover_area)
+                    addEffects(xindex, yindex, auxiliarElement.cover_area)
                 }
                 break;
             default:
                 break;
         }
-        console.log("created ", selectedElement?.class?.id);
+        console.log("created ", auxiliarElement);
 
     }
     
     const checkRoads = (xindex, yindex) => {
         const adjacentPositions = checkAdjacentPositions(xindex, yindex)
-        if (adjacentPositions.some(item => item.value === 1)) {
+        if (adjacentPositions.some(item => item.name === 'road')) {
             return true;
         }
         return false;
     }
 
     const definePositionEffects = (xindex, yindex) => {
-        let combinedEffects = selectedElement.class.effects.concat(mapGrid[xindex][yindex].class.effects);
-        selectedElement.class.effects = combinedEffects;
+        let combinedEffects = auxiliarElement.effects.concat(mapGrid[xindex][yindex].effects);
+        auxiliarElement.effects = combinedEffects;
     }
 
     
@@ -87,7 +90,7 @@ export default function GameController() {
     }
 
     const addMapBoxEffect = (xindex, yindex) => {
-        mapGrid[xindex][yindex].class.effects.push(selectedElement.class.cover_service)
+        mapGrid[xindex][yindex].effects.push(auxiliarElement.cover_service)
     }
 
     const addGamePopulation = () => {
