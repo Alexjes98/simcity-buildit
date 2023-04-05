@@ -5,3 +5,10 @@ export const defaultMainStats = {
     happiness: 'test',
     simoleons: 'test'
 }
+
+export const effectClass = {
+    id: '',
+    factor: 0,
+    parentId: '',
+    type: ''
+}
