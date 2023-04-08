@@ -7,7 +7,11 @@ import factoryImage from '../../assets/map/fabric.png';
 import policeImage from '../../assets/map/police.png';
 import fireHouseImage from '../../assets/map/firehouse.png';
 import healthImage from '../../assets/map/hospital.png';
-import noFound from '../../assets/map/nofound.png';
+import electricUncleanImage from '../../assets/map/electric1.png';
+import electricCleanImage from '../../assets/map/electric2.png';
+import residualWaterImage from '../../assets/map/residualwater.png';
+import wastePlantImage from '../../assets/map/waste.png';
+import notFound from '../../assets/map/nofound.png';
 import { useState } from "react";
 
 export default function MapBox(props) {
@@ -30,8 +34,16 @@ export default function MapBox(props) {
                 return fireHouseImage;
             case 'health':
                 return healthImage;
+            case 'electric-unclean':
+                return electricUncleanImage
+            case 'electric-clean':
+                return electricCleanImage;
+            case 'residual-water':
+                return residualWaterImage;
+            case 'waste-plant':
+                return wastePlantImage;
             default:
-                return noFound;
+                return notFound;
         }
     }
 

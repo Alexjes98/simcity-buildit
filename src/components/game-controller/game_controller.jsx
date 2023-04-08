@@ -84,10 +84,8 @@ export default function GameController() {
         const adjacentPositions = checkAdjacentPositions(xindex, yindex)
         const adjacentBuildings = adjacentPositions.filter(element => element.object.type_id !== undefined)
         adjacentBuildings.forEach(element => {
-            console.log("ACTIVANDO", element.object)
             addEffects(element.x, element.y, element.object.cover_area, element.object.cover_service)
             element.object.is_active = true;
-            console.log(element.object.effects)
             updateGrid(element.x, element.y,element.object);
         });
     }
@@ -157,7 +155,7 @@ export default function GameController() {
     return <div className='main-game-controller'>
         <Sidebar className="sidebar" events={{ setSelectedElement }}></Sidebar>
         <StatsUI className='stats-main-row ' objProps={mainStats}></StatsUI>
-        <Map className='main-content' mapGrid={mapGrid} events={{ eventHandler, setBlock }}></Map>
+        <Map className='map-container' mapGrid={mapGrid} events={{ eventHandler, setBlock }}></Map>
     </div>
 
 }

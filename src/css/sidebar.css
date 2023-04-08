@@ -3,7 +3,8 @@
     top: 0;
     left: 0;
     bottom: 0;
-    width: 100px;
+    width: 170px;
+    padding: 20px;
     background-color: gray;
     color: orange;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
@@ -11,7 +12,7 @@
     z-index: 1;
 }
 .menu-icon{
-    padding: 5px;
+    padding: 2px;
 }
 .menu-icon:hover{
     color: white;

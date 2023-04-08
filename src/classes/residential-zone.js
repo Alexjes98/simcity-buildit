@@ -29,7 +29,7 @@ export class ResidentialZone extends Building {
       type: 'police'
     },
     {
-      type: 'fire-house'
+      type: 'firehouse'
     },
     {
       type: 'health'
