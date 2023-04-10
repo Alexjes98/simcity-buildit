@@ -7,6 +7,7 @@ export class ResidentialZone extends Building {
     this.actual_population = actual_population;
     this.is_abandoned = is_abandoned;
     this.effects = effects;
+    console.log(this.notCoveredServices())
     this.happiness = happiness;
     this.upgrade_probability = upgrade_probability;
     this.construction_event = construction_event;    
@@ -15,9 +16,6 @@ export class ResidentialZone extends Building {
   requiredServices = [
     {
       type: 'electricity'
-    },
-    {
-      type: 'water'
     },
     {
       type: 'residual-water'

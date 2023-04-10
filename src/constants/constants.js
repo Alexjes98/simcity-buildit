@@ -1,9 +1,9 @@
 export const defaultMainStats = {
-    level: 'test',
-    experience: 'test',
+    level: 0,
+    experience: 0,
     population: 0,
-    happiness: 'test',
-    simoleons: 'test'
+    happiness: 0,
+    simoleons: 0
 }
 
 export const effectClass = {

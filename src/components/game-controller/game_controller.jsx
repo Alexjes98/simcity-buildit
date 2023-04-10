@@ -6,7 +6,7 @@ import Sidebar from '../side-bar/side-bar';
 
 import { defaultMainStats } from '../../constants/constants';
 
-import { newPoliceStation, newResidentialZone, newRoad } from '../../constants/defaultBuildings';
+import { newCleanElectricity, newFireHouse, newHospital, newPoliceStation, newResidentialZone, newResidualWater, newRoad, newTrashPlant, newUncleanElectricity } from '../../constants/defaultBuildings';
 
 export default function GameController() {
 
@@ -15,6 +15,9 @@ export default function GameController() {
         police: 0,
         firehouse: 0,
         hospitals: 0,
+        residual_waters: 0,
+        waste_plants: 0,
+        electric_plants: 0,
     })
 
     const [mapGrid, setMapGrid] = useState(Array.from({ length: 15 }, () => Array.from({ length: 15 }, () => { return { name: 'delete', effects: [] } })));
@@ -40,26 +43,66 @@ export default function GameController() {
         }
         return false;
     }
-
     const defineBuildingValues = (xindex, yindex) => {
         switch (selectedElement.name) {
             case 'road':
                 auxiliarElement = newRoad()
-                auxiliarElement.effects = definePositionEffects(auxiliarElement.effects,mapGrid[xindex][yindex].effects);
+                auxiliarElement.effects = definePositionEffects(auxiliarElement.effects, mapGrid[xindex][yindex].effects);
                 activateAdjacentBuildings(xindex, yindex);
                 break;
             case 'residential':
                 auxiliarElement = newResidentialZone()
                 if (checkRoads(xindex, yindex)) {
                     auxiliarElement.is_active = true
-                    auxiliarElement.effects = definePositionEffects(auxiliarElement.effects,mapGrid[xindex][yindex].effects);
+                    auxiliarElement.effects = definePositionEffects(auxiliarElement.effects, mapGrid[xindex][yindex].effects);
+                    addGamePopulation(auxiliarElement.actual_population);
                 }
                 break;
             case 'police':
                 auxiliarElement = newPoliceStation()
                 if (checkRoads(xindex, yindex)) {
-                    setService(xindex, yindex, auxiliarElement.cover_area,auxiliarElement.cover_service)
-                    setBuilingsStats({...buildingsStats, police: buildingsStats.police + 1})
+                    setService(xindex, yindex, auxiliarElement.cover_area, auxiliarElement.cover_service)
+                    setBuilingsStats({ ...buildingsStats, police: buildingsStats.police + 1 })
+                }
+                break;
+            case 'firehouse':
+                auxiliarElement = newFireHouse()
+                if (checkRoads(xindex, yindex)) {
+                    setService(xindex, yindex, auxiliarElement.cover_area, auxiliarElement.cover_service)
+                    setBuilingsStats({ ...buildingsStats, firehouse: buildingsStats.firehouse + 1 })
+                }
+                break;
+            case 'health':
+                auxiliarElement = newHospital()
+                if (checkRoads(xindex, yindex)) {
+                    setService(xindex, yindex, auxiliarElement.cover_area, auxiliarElement.cover_service)
+                    setBuilingsStats({ ...buildingsStats, hospitals: buildingsStats.hospitals + 1 })
+                }
+                break;
+            case 'residual-water':
+                auxiliarElement = newResidualWater()
+                if (checkRoads(xindex, yindex)) {
+                    setService(xindex, yindex, auxiliarElement.cover_area, auxiliarElement.cover_service)
+                    setBuilingsStats({ ...buildingsStats, residual_waters: buildingsStats.residual_waters + 1 })
+                }
+                break;
+            case 'waste-plant':
+                auxiliarElement = newTrashPlant()
+                if (checkRoads(xindex, yindex)) {
+                    setService(xindex, yindex, auxiliarElement.cover_area, auxiliarElement.cover_service)
+                    setBuilingsStats({ ...buildingsStats, waste_plants: buildingsStats.waste_plants + 1 })
+                }
+                break;
+            case 'electric-clean':
+                auxiliarElement = newCleanElectricity()
+                setService(xindex, yindex, auxiliarElement.cover_area, auxiliarElement.cover_service)
+                setBuilingsStats({ ...buildingsStats, electric_plants: buildingsStats.electric_plants + 1 })
+                break;
+            case 'electric-unclean':
+                auxiliarElement = newUncleanElectricity()
+                if (checkRoads(xindex, yindex)) {
+                    setService(xindex, yindex, auxiliarElement.cover_area, auxiliarElement.cover_service)
+                    setBuilingsStats({ ...buildingsStats, electric_plants: buildingsStats.electric_plants + 1 })
                 }
                 break;
             default:
@@ -86,7 +129,7 @@ export default function GameController() {
         adjacentBuildings.forEach(element => {
             addEffects(element.x, element.y, element.object.cover_area, element.object.cover_service)
             element.object.is_active = true;
-            updateGrid(element.x, element.y,element.object);
+            updateGrid(element.x, element.y, element.object);
         });
     }
 
@@ -119,8 +162,8 @@ export default function GameController() {
         setMapGrid(newGrid);
     }
 
-    const addGamePopulation = () => {
-        const newPopulation = { ...mainStats, population: mainStats.population + selectedElement.actual_population }
+    const addGamePopulation = (population) => {
+        const newPopulation = { ...mainStats, population: mainStats.population + population}
         setMainStats(newPopulation)
     }
 
@@ -132,22 +175,22 @@ export default function GameController() {
         if (xindex < 0 || xindex >= mapGrid.length || yindex < 0 || yindex >= mapGrid[0].length) {
             throw new Error("Index out of bounds");
         }
-        const adjacentPositions = [{object: {}, x: {}, y:{}}];
+        const adjacentPositions = [{ object: {}, x: {}, y: {} }];
         // check top position
         if (xindex > 0) {
-            adjacentPositions.push({object: mapGrid[xindex - 1][yindex], x: xindex-1, y: yindex});            
+            adjacentPositions.push({ object: mapGrid[xindex - 1][yindex], x: xindex - 1, y: yindex });
         }
         // check bottom position
         if (xindex < mapGrid.length - 1) {
-            adjacentPositions.push({object: mapGrid[xindex + 1][yindex], x: xindex+1,y: yindex});
+            adjacentPositions.push({ object: mapGrid[xindex + 1][yindex], x: xindex + 1, y: yindex });
         }
         // check left position
         if (yindex > 0) {
-            adjacentPositions.push({object: mapGrid[xindex][yindex - 1], x: xindex, y: yindex-1});
+            adjacentPositions.push({ object: mapGrid[xindex][yindex - 1], x: xindex, y: yindex - 1 });
         }
         // check right position
         if (yindex < mapGrid[0].length - 1) {
-            adjacentPositions.push({object: mapGrid[xindex][yindex + 1], x: xindex, y: yindex +1});
+            adjacentPositions.push({ object: mapGrid[xindex][yindex + 1], x: xindex, y: yindex + 1 });
         }
         return adjacentPositions;
     }
