@@ -6,7 +6,7 @@ import Sidebar from '../side-bar/side-bar';
 
 import { defaultBuildingStats, defaultMainStats } from '../../constants/constants';
 
-import { newCleanElectricity, newFireHouse, newHospital, newPoliceStation, newResidentialZone, newResidualWater, newRoad, newTrashPlant, newUncleanElectricity } from '../../constants/defaultBuildings';
+import { newCleanElectricity, newFireHouse, newHospital, newPark, newPoliceStation, newResidentialZone, newResidualWater, newRoad, newTrashPlant, newUncleanElectricity } from '../../constants/defaultBuildings';
 
 export default function GameController() {
 
@@ -18,7 +18,7 @@ export default function GameController() {
     var auxiliarElement = {};
 
     useEffect(() => {
-        defineHapiness()
+        updateHousesValues()
     }, [buildingsStats, mainStats])
 
     const changeSelectedElement = (element) => {
@@ -46,19 +46,21 @@ export default function GameController() {
         return false;
     }
 
-    const defineHapiness = () => {
+    const updateHousesValues = () => {
+        let totalPopulation = 0;
         let totalHapiness = 0
         let totalHouses = 0
         for (let i = 0; i < mapGrid.length; i++) {
             const houses = mapGrid[i].filter((item) => item.type === "residential")
             houses.forEach(residential => {
-                console.log("ROW: ", i)
+                totalPopulation += residential.calculatePopulation()
                 totalHouses++
                 totalHapiness += residential.calculateHapiness()
             });
         }
         const average_happiness_percentage = (totalHapiness / totalHouses)
         const newStats = mainStats
+        newStats.population = totalPopulation;
         newStats.happiness = average_happiness_percentage.toFixed(1)
         setMainStats(newStats)
     }
@@ -134,6 +136,11 @@ export default function GameController() {
                     setService(xindex, yindex, auxiliarElement.cover_area, auxiliarElement.cover_service)
                     setBuildingsStats({ ...buildingsStats, electric_plants: buildingsStats.electric_plants + 1 })
                 }
+                break;
+            case 'park':
+                auxiliarElement = newPark()
+                setService(xindex, yindex, auxiliarElement.cover_area, auxiliarElement.cover_service)
+                setBuildingsStats({ ...buildingsStats, parks: buildingsStats.parks + 1 })
                 break;
             default:
                 break;

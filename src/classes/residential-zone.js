@@ -1,10 +1,11 @@
 import { Building } from './building'
 export class ResidentialZone extends Building {
-  constructor(id,type_id,is_active, type, level, name, maxPopulation, actual_population, is_abandoned, effects, happiness, upgrade_probability, construction_event, game_values) {
+  constructor(id,type_id,is_active, type, level, name, maxPopulation,initial_population, is_abandoned, effects, happiness, upgrade_probability, construction_event, game_values) {
     super(id,is_active, type, level,type_id,effects,game_values);
     this.name = name;
     this.maxPopulation = maxPopulation;
-    this.actual_population = actual_population;
+    this.initial_population = initial_population;
+    this.actual_population = this.calculatePopulation()
     this.is_abandoned = is_abandoned;
     this.happiness = happiness;
     this.upgrade_probability = upgrade_probability;
@@ -34,24 +35,36 @@ export class ResidentialZone extends Building {
 
   spacialitiesServices = [
     {
-      type: 'parks',
-    },
-    {
-      type: 'games',
+      type: 'specialty',
     },
   ]
 
   notCoveredServices() {
-    let notFound = this.requiredServices.filter(service => !this.effects.find(effect => effect.type === service.type));
-    return notFound;
+    let notFound = this.requiredServices.filter(service => !this.effects.find(effect => effect.type === service.type))
+    return notFound
   }
 
-  definePopulation() {
-
+  notCoveredSpecialties() {
+    let notFound = this.spacialitiesServices.filter(service => !this.effects.find(effect => effect.type === service.type))
+    return notFound    
+  }
+  
+  populationBonus(){
+    let bonus = 0;
+    let bonuses = this.effects.filter(service => service.type === "specialty");
+    bonuses.forEach(effect => {
+      bonus += effect.factor;  
+      if(bonus > this.maxPopulation){
+        bonus = this.maxPopulation;
+        return bonus;
+      }    
+    });
+    return bonus;
   }
 
-  setIsActive(value){
-    this.is_active = value; 
+  calculatePopulation(){
+    this.actual_population = this.initial_population + this.populationBonus();
+    return this.actual_population;
   }
   
   calculateHapiness(){
@@ -59,7 +72,11 @@ export class ResidentialZone extends Building {
     this.notCoveredServices().forEach(service => {
       hapiness -= 10;      
     });
-    console.log(this.notCoveredServices())
+    this.notCoveredSpecialties().forEach(service =>{
+      hapiness -= 10;
+    })
+
+    console.log(this.notCoveredServices(),this.notCoveredSpecialties())
     this.happiness = hapiness;
     return this.happiness;
   }

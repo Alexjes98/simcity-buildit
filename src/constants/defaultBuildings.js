@@ -4,6 +4,7 @@ import { Service } from '../classes/service';
 
 import { __hash__ } from '../utils/utils';
 import { Effect } from '../classes/effect';
+import { Specialtie } from '../classes/specialties';
 
 export function newRoad() {
     return new Road("road", 0, 10, 0, false, [],{experience: 1, price: 10});
@@ -85,5 +86,12 @@ export function newUncleanElectricity(){
         "basic_trash_plant", 4,
         new Effect(__hash__(), 0.1, id, 'electricity'),
         30, 3, true, {experience: 15, price: 100}
+    );
+}
+
+export function newPark(){
+    const id = __hash__();
+    return new Specialtie(id,"non_activable_building",true,"park",0,[],
+    "basic_park",4,new Effect(__hash__(), 20, id, 'specialty'), {experience: 10, price: 50}
     );
 }

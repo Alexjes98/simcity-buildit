@@ -8,6 +8,7 @@ export const defaultMainStats = {
 
 export const defaultBuildingStats = {
     residentials: 0,
+    parks: 0,
     police: 0,
     firehouse: 0,
     hospitals: 0,

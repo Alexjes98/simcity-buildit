@@ -14,7 +14,8 @@ import {
   faDropletSlash,
   faTrash,
   faPlugCirclePlus,
-  faPlugCircleExclamation
+  faPlugCircleExclamation,
+  faTree
 } from '@fortawesome/free-solid-svg-icons';
 
 import logo from '../../assets/ui/logo.png';
@@ -69,6 +70,9 @@ const sidebarNavItems = [
   {
     display: 'Specialities',
     menuItems: [
+      {
+        name: "park", icon: faTree, value: 11
+      }
     ]
   },
 ]

@@ -12,6 +12,7 @@ import electricCleanImage from '../../assets/map/electric2.png';
 import residualWaterImage from '../../assets/map/residualwater.png';
 import wastePlantImage from '../../assets/map/waste.png';
 import notFound from '../../assets/map/nofound.png';
+import park from '../../assets/map/park.png'
 import { useState } from "react";
 
 export default function MapBox(props) {
@@ -42,6 +43,8 @@ export default function MapBox(props) {
                 return residualWaterImage;
             case 'waste-plant':
                 return wastePlantImage;
+            case 'park':
+                return park
             default:
                 return notFound;
         }
