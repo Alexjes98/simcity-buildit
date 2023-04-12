@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import StatsUI from '../../components/ui/stats';
 import Map from '../map/map';
@@ -11,7 +11,8 @@ import { newCleanElectricity, newFireHouse, newHospital, newPoliceStation, newRe
 export default function GameController() {
 
     const [mainStats, setMainStats] = useState(defaultMainStats)
-    const [buildingsStats, setBuilingsStats] = useState({
+    const [buildingsStats, setBuildingsStats] = useState({
+        residentials: 0,
         police: 0,
         firehouse: 0,
         hospitals: 0,
@@ -21,12 +22,12 @@ export default function GameController() {
     })
 
     const [mapGrid, setMapGrid] = useState(Array.from({ length: 15 }, () => Array.from({ length: 15 }, () => { return { name: 'delete', effects: [] } })));
-    var selectedElement = { name: "pointer" }
+    var [selectedElement, setSelectedElement] = useState({ name: "pointer" })
     var auxiliarElement = {};
 
-    const setSelectedElement = (element) => {
+    const changeSelectedElement = (element) => {
         if (selectedElement === element) return;
-        selectedElement = element;
+        setSelectedElement(element);
         return selectedElement;
     }
 
@@ -43,6 +44,28 @@ export default function GameController() {
         }
         return false;
     }
+
+    const defineHapiness = () => {
+        let totalHapiness = 0
+        let totalHouses = 0
+        for (let i = 0; i < mapGrid.length; i++) {
+            const houses = mapGrid[i].filter((item) => item.type === "residential")
+            houses.forEach(residential => {
+                console.log("ROW: ",i)
+                totalHouses++
+                totalHapiness += residential.calculateHapiness()
+            });
+        }
+        const average_happiness_percentage = (totalHapiness / totalHouses)        
+        const newStats = mainStats
+        newStats.happiness = average_happiness_percentage.toFixed(1)
+        setMainStats(newStats)
+    }
+    
+    useEffect(() =>{
+        defineHapiness()
+    },[buildingsStats, mainStats])
+
     const defineBuildingValues = (xindex, yindex) => {
         switch (selectedElement.name) {
             case 'road':
@@ -55,6 +78,7 @@ export default function GameController() {
                 if (checkRoads(xindex, yindex)) {
                     auxiliarElement.is_active = true
                     auxiliarElement.effects = definePositionEffects(auxiliarElement.effects, mapGrid[xindex][yindex].effects);
+                    setBuildingsStats({ ...buildingsStats, residentials: buildingsStats.residentials + 1 })
                     addGamePopulation(auxiliarElement.actual_population);
                 }
                 break;
@@ -62,54 +86,54 @@ export default function GameController() {
                 auxiliarElement = newPoliceStation()
                 if (checkRoads(xindex, yindex)) {
                     setService(xindex, yindex, auxiliarElement.cover_area, auxiliarElement.cover_service)
-                    setBuilingsStats({ ...buildingsStats, police: buildingsStats.police + 1 })
+                    setBuildingsStats({ ...buildingsStats, police: buildingsStats.police + 1 })
                 }
                 break;
             case 'firehouse':
                 auxiliarElement = newFireHouse()
                 if (checkRoads(xindex, yindex)) {
                     setService(xindex, yindex, auxiliarElement.cover_area, auxiliarElement.cover_service)
-                    setBuilingsStats({ ...buildingsStats, firehouse: buildingsStats.firehouse + 1 })
+                    setBuildingsStats({ ...buildingsStats, firehouse: buildingsStats.firehouse + 1 })
                 }
                 break;
             case 'health':
                 auxiliarElement = newHospital()
                 if (checkRoads(xindex, yindex)) {
                     setService(xindex, yindex, auxiliarElement.cover_area, auxiliarElement.cover_service)
-                    setBuilingsStats({ ...buildingsStats, hospitals: buildingsStats.hospitals + 1 })
+                    setBuildingsStats({ ...buildingsStats, hospitals: buildingsStats.hospitals + 1 })
                 }
                 break;
             case 'residual-water':
                 auxiliarElement = newResidualWater()
                 if (checkRoads(xindex, yindex)) {
                     setService(xindex, yindex, auxiliarElement.cover_area, auxiliarElement.cover_service)
-                    setBuilingsStats({ ...buildingsStats, residual_waters: buildingsStats.residual_waters + 1 })
+                    setBuildingsStats({ ...buildingsStats, residual_waters: buildingsStats.residual_waters + 1 })
                 }
                 break;
             case 'waste-plant':
                 auxiliarElement = newTrashPlant()
                 if (checkRoads(xindex, yindex)) {
                     setService(xindex, yindex, auxiliarElement.cover_area, auxiliarElement.cover_service)
-                    setBuilingsStats({ ...buildingsStats, waste_plants: buildingsStats.waste_plants + 1 })
+                    setBuildingsStats({ ...buildingsStats, waste_plants: buildingsStats.waste_plants + 1 })
                 }
                 break;
             case 'electric-clean':
                 auxiliarElement = newCleanElectricity()
                 setService(xindex, yindex, auxiliarElement.cover_area, auxiliarElement.cover_service)
-                setBuilingsStats({ ...buildingsStats, electric_plants: buildingsStats.electric_plants + 1 })
+                setBuildingsStats({ ...buildingsStats, electric_plants: buildingsStats.electric_plants + 1 })
                 break;
             case 'electric-unclean':
                 auxiliarElement = newUncleanElectricity()
                 if (checkRoads(xindex, yindex)) {
                     setService(xindex, yindex, auxiliarElement.cover_area, auxiliarElement.cover_service)
-                    setBuilingsStats({ ...buildingsStats, electric_plants: buildingsStats.electric_plants + 1 })
+                    setBuildingsStats({ ...buildingsStats, electric_plants: buildingsStats.electric_plants + 1 })
                 }
                 break;
             default:
                 break;
         }
+        
         updateGrid(xindex, yindex, auxiliarElement)
-        //console.log("created ", mapGrid[xindex][yindex]);
     }
 
     const updateGrid = (xindex, yindex, element) => {
@@ -127,6 +151,7 @@ export default function GameController() {
         const adjacentPositions = checkAdjacentPositions(xindex, yindex)
         const adjacentBuildings = adjacentPositions.filter(element => element.object.type_id !== undefined)
         adjacentBuildings.forEach(element => {
+            if (element.object.is_active) return;
             addEffects(element.x, element.y, element.object.cover_area, element.object.cover_service)
             element.object.is_active = true;
             updateGrid(element.x, element.y, element.object);
@@ -163,8 +188,17 @@ export default function GameController() {
     }
 
     const addGamePopulation = (population) => {
-        const newPopulation = { ...mainStats, population: mainStats.population + population}
+        const newPopulation = { ...mainStats, population: mainStats?.population + population }
         setMainStats(newPopulation)
+    }
+
+    const addExperience = (experience) => {
+        const newExperience = { ...mainStats, experience: mainStats?.experience + experience}
+        if(newExperience.experience >= 100){
+            newExperience.experience = 0;
+            newExperience.level = newExperience.level + 1;
+        }
+        setMainStats(newExperience)
     }
 
     const eventHandler = () => {
@@ -196,7 +230,8 @@ export default function GameController() {
     }
 
     return <div className='main-game-controller'>
-        <Sidebar className="sidebar" events={{ setSelectedElement }}></Sidebar>
+        
+        <Sidebar className="sidebar" events={{ setSelectedElement: changeSelectedElement }}></Sidebar>
         <StatsUI className='stats-main-row ' objProps={mainStats}></StatsUI>
         <Map className='map-container' mapGrid={mapGrid} events={{ eventHandler, setBlock }}></Map>
     </div>

@@ -14,7 +14,7 @@ export function newResidentialZone () {
     return new ResidentialZone(
         id,"activable_building", false, "residential", 0,
         "home", 20, 2, false, [],
-        0.5, 0, true
+        0.0, 0, true
     )
 }
 
@@ -23,7 +23,7 @@ export function newPoliceStation() {
     return new Service(
         id, "activable_building", false, "police", 0, [],
         "basic_police_station", 3,
-        new Effect(__hash__(), 0, id, 'police'),
+        new Effect(__hash__(), 0.1, id, 'police'),
         7, 0, false
     );
 }
@@ -33,7 +33,7 @@ export function newFireHouse(){
     return new Service(
         id, "activable_building", false, "firehouse", 0, [],
         "basic_firehouse", 5,
-        new Effect(__hash__(), 0, id, 'firehouse'),
+        new Effect(__hash__(), 0.1, id, 'firehouse'),
         10, 0, false
     );
 }
@@ -43,7 +43,7 @@ export function newHospital(){
     return new Service(
         id, "activable_building", false, "health", 0, [],
         "basic_hospital", 4,
-        new Effect(__hash__(), 0, id, 'health'),
+        new Effect(__hash__(), 0.1, id, 'health'),
         15, 0, false
     );
 }
@@ -53,7 +53,7 @@ export function newResidualWater(){
     return new Service(
         id, "activable_building", false, "residual-water", 0, [],
         "basic_residual-water", 4,
-        new Effect(__hash__(), 0, id, 'residual-water'),
+        new Effect(__hash__(), 0.1, id, 'residual-water'),
         30, 3, true
     );
 }
@@ -63,7 +63,7 @@ export function newTrashPlant(){
     return new Service(
         id, "activable_building", false, "cleanliness", 0, [],
         "basic_trash_plant", 4,
-        new Effect(__hash__(), 0, id, 'cleanliness'),
+        new Effect(__hash__(), 0.1, id, 'cleanliness'),
         30, 3, true
     );
 }
@@ -73,7 +73,7 @@ export function newCleanElectricity(){
     return new Service(
         id, "non_activable_building", true, "electricity", 0, [],
         "basic_turbine", 6,
-        new Effect(__hash__(), 0, id, 'electricity'),
+        new Effect(__hash__(), 0.1, id, 'electricity'),
         30, 0, false
     );
 }
@@ -83,7 +83,7 @@ export function newUncleanElectricity(){
     return new Service(
         id, "activable_building", false, "electricity", 0, [],
         "basic_trash_plant", 4,
-        new Effect(__hash__(), 0, id, 'electricity'),
+        new Effect(__hash__(), 0.1, id, 'electricity'),
         30, 3, true
     );
 }
