@@ -25,8 +25,8 @@ const sidebarNavItems = [
   {
     display: 'Construction',
     menuItems: [
-      { name: "pointer", icon: faArrowPointer, value: -1 },
-      { name: "delete", icon: faSnowplow, value: 0 },
+      { name: "pointer", icon: faArrowPointer, value: -1},
+      { name: "delete", icon: faSnowplow, value: 0},
       { name: "road", icon: faRoad, value: 1},
       {
         name: "residential", icon: faHome, value: 2

@@ -1,15 +1,14 @@
 import { Building } from './building'
 export class ResidentialZone extends Building {
-  constructor(id,type_id,is_active, type, level, name, maxPopulation, actual_population, is_abandoned, effects, happiness, upgrade_probability, construction_event) {
-    super(id,is_active, type, level,type_id,effects);
+  constructor(id,type_id,is_active, type, level, name, maxPopulation, actual_population, is_abandoned, effects, happiness, upgrade_probability, construction_event, game_values) {
+    super(id,is_active, type, level,type_id,effects,game_values);
     this.name = name;
     this.maxPopulation = maxPopulation;
     this.actual_population = actual_population;
     this.is_abandoned = is_abandoned;
-    this.effects = effects;
     this.happiness = happiness;
     this.upgrade_probability = upgrade_probability;
-    this.construction_event = construction_event;    
+    this.construction_event = construction_event;
   }
 
   requiredServices = [

@@ -4,26 +4,22 @@ import StatsUI from '../../components/ui/stats';
 import Map from '../map/map';
 import Sidebar from '../side-bar/side-bar';
 
-import { defaultMainStats } from '../../constants/constants';
+import { defaultBuildingStats, defaultMainStats } from '../../constants/constants';
 
 import { newCleanElectricity, newFireHouse, newHospital, newPoliceStation, newResidentialZone, newResidualWater, newRoad, newTrashPlant, newUncleanElectricity } from '../../constants/defaultBuildings';
 
 export default function GameController() {
 
     const [mainStats, setMainStats] = useState(defaultMainStats)
-    const [buildingsStats, setBuildingsStats] = useState({
-        residentials: 0,
-        police: 0,
-        firehouse: 0,
-        hospitals: 0,
-        residual_waters: 0,
-        waste_plants: 0,
-        electric_plants: 0,
-    })
+    const [buildingsStats, setBuildingsStats] = useState(defaultBuildingStats)
 
     const [mapGrid, setMapGrid] = useState(Array.from({ length: 15 }, () => Array.from({ length: 15 }, () => { return { name: 'delete', effects: [] } })));
     var [selectedElement, setSelectedElement] = useState({ name: "pointer" })
     var auxiliarElement = {};
+
+    useEffect(() => {
+        defineHapiness()
+    }, [buildingsStats, mainStats])
 
     const changeSelectedElement = (element) => {
         if (selectedElement === element) return;
@@ -36,6 +32,11 @@ export default function GameController() {
         if (cantBuild(xindex, yindex)) return;
         defineBuildingValues(xindex, yindex);
         return selectedElement.name;
+    }
+
+    const cantPay = (price) => {
+        if (mainStats.simoleons - price <= 0) return true;
+        return false;
     }
 
     const cantBuild = (xindex, yindex) => {
@@ -51,30 +52,28 @@ export default function GameController() {
         for (let i = 0; i < mapGrid.length; i++) {
             const houses = mapGrid[i].filter((item) => item.type === "residential")
             houses.forEach(residential => {
-                console.log("ROW: ",i)
+                console.log("ROW: ", i)
                 totalHouses++
                 totalHapiness += residential.calculateHapiness()
             });
         }
-        const average_happiness_percentage = (totalHapiness / totalHouses)        
+        const average_happiness_percentage = (totalHapiness / totalHouses)
         const newStats = mainStats
         newStats.happiness = average_happiness_percentage.toFixed(1)
         setMainStats(newStats)
     }
-    
-    useEffect(() =>{
-        defineHapiness()
-    },[buildingsStats, mainStats])
 
     const defineBuildingValues = (xindex, yindex) => {
         switch (selectedElement.name) {
             case 'road':
                 auxiliarElement = newRoad()
+                if (cantPay(auxiliarElement.game_values.price)) return;
                 auxiliarElement.effects = definePositionEffects(auxiliarElement.effects, mapGrid[xindex][yindex].effects);
                 activateAdjacentBuildings(xindex, yindex);
                 break;
             case 'residential':
                 auxiliarElement = newResidentialZone()
+                if (cantPay(auxiliarElement.game_values.price)) return;
                 if (checkRoads(xindex, yindex)) {
                     auxiliarElement.is_active = true
                     auxiliarElement.effects = definePositionEffects(auxiliarElement.effects, mapGrid[xindex][yindex].effects);
@@ -84,6 +83,7 @@ export default function GameController() {
                 break;
             case 'police':
                 auxiliarElement = newPoliceStation()
+                if (cantPay(auxiliarElement.game_values.price)) return;
                 if (checkRoads(xindex, yindex)) {
                     setService(xindex, yindex, auxiliarElement.cover_area, auxiliarElement.cover_service)
                     setBuildingsStats({ ...buildingsStats, police: buildingsStats.police + 1 })
@@ -91,6 +91,7 @@ export default function GameController() {
                 break;
             case 'firehouse':
                 auxiliarElement = newFireHouse()
+                if (cantPay(auxiliarElement.game_values.price)) return;
                 if (checkRoads(xindex, yindex)) {
                     setService(xindex, yindex, auxiliarElement.cover_area, auxiliarElement.cover_service)
                     setBuildingsStats({ ...buildingsStats, firehouse: buildingsStats.firehouse + 1 })
@@ -98,6 +99,7 @@ export default function GameController() {
                 break;
             case 'health':
                 auxiliarElement = newHospital()
+                if (cantPay(auxiliarElement.game_values.price)) return;
                 if (checkRoads(xindex, yindex)) {
                     setService(xindex, yindex, auxiliarElement.cover_area, auxiliarElement.cover_service)
                     setBuildingsStats({ ...buildingsStats, hospitals: buildingsStats.hospitals + 1 })
@@ -105,6 +107,7 @@ export default function GameController() {
                 break;
             case 'residual-water':
                 auxiliarElement = newResidualWater()
+                if (cantPay(auxiliarElement.game_values.price)) return;
                 if (checkRoads(xindex, yindex)) {
                     setService(xindex, yindex, auxiliarElement.cover_area, auxiliarElement.cover_service)
                     setBuildingsStats({ ...buildingsStats, residual_waters: buildingsStats.residual_waters + 1 })
@@ -112,6 +115,7 @@ export default function GameController() {
                 break;
             case 'waste-plant':
                 auxiliarElement = newTrashPlant()
+                if (cantPay(auxiliarElement.game_values.price)) return;
                 if (checkRoads(xindex, yindex)) {
                     setService(xindex, yindex, auxiliarElement.cover_area, auxiliarElement.cover_service)
                     setBuildingsStats({ ...buildingsStats, waste_plants: buildingsStats.waste_plants + 1 })
@@ -119,11 +123,13 @@ export default function GameController() {
                 break;
             case 'electric-clean':
                 auxiliarElement = newCleanElectricity()
+                if (cantPay(auxiliarElement.game_values.price)) return;
                 setService(xindex, yindex, auxiliarElement.cover_area, auxiliarElement.cover_service)
                 setBuildingsStats({ ...buildingsStats, electric_plants: buildingsStats.electric_plants + 1 })
                 break;
             case 'electric-unclean':
                 auxiliarElement = newUncleanElectricity()
+                if (cantPay(auxiliarElement.game_values.price)) return;
                 if (checkRoads(xindex, yindex)) {
                     setService(xindex, yindex, auxiliarElement.cover_area, auxiliarElement.cover_service)
                     setBuildingsStats({ ...buildingsStats, electric_plants: buildingsStats.electric_plants + 1 })
@@ -132,8 +138,15 @@ export default function GameController() {
             default:
                 break;
         }
-        
+        payForBuilding(auxiliarElement.game_values.price)
+        addExperience(auxiliarElement.game_values.experience)
         updateGrid(xindex, yindex, auxiliarElement)
+    }
+
+    const payForBuilding = (price) => {
+        const newStats = mainStats
+        newStats.simoleons = newStats.simoleons - price
+        setMainStats(newStats)
     }
 
     const updateGrid = (xindex, yindex, element) => {
@@ -188,13 +201,14 @@ export default function GameController() {
     }
 
     const addGamePopulation = (population) => {
-        const newPopulation = { ...mainStats, population: mainStats?.population + population }
+        const newPopulation = mainStats
+        newPopulation.population = newPopulation.population + population;
         setMainStats(newPopulation)
     }
 
     const addExperience = (experience) => {
-        const newExperience = { ...mainStats, experience: mainStats?.experience + experience}
-        if(newExperience.experience >= 100){
+        const newExperience = { ...mainStats, experience: mainStats?.experience + experience }
+        if (newExperience.experience >= 100) {
             newExperience.experience = 0;
             newExperience.level = newExperience.level + 1;
         }
@@ -230,7 +244,7 @@ export default function GameController() {
     }
 
     return <div className='main-game-controller'>
-        
+
         <Sidebar className="sidebar" events={{ setSelectedElement: changeSelectedElement }}></Sidebar>
         <StatsUI className='stats-main-row ' objProps={mainStats}></StatsUI>
         <Map className='map-container' mapGrid={mapGrid} events={{ eventHandler, setBlock }}></Map>
