@@ -7,7 +7,8 @@ import { Effect } from '../classes/effect';
 import { Specialtie } from '../classes/specialties';
 
 export function newRoad() {
-    return new Road("road", 0, 10, 0, false, [],{experience: 1, price: 10});
+    const id = __hash__();
+    return new Road(id,"road", 0, 10, 0, false, [],{experience: 1, price: 10});
 }
 
 export function newResidentialZone () {

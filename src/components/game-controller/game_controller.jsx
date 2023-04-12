@@ -4,7 +4,7 @@ import StatsUI from '../../components/ui/stats';
 import Map from '../map/map';
 import Sidebar from '../side-bar/side-bar';
 
-import { defaultBuildingStats, defaultMainStats } from '../../constants/constants';
+import { defaultBuildingStats, defaultMainStats, defaultMapBox } from '../../constants/constants';
 
 import { newCleanElectricity, newFireHouse, newHospital, newPark, newPoliceStation, newResidentialZone, newResidualWater, newRoad, newTrashPlant, newUncleanElectricity } from '../../constants/defaultBuildings';
 
@@ -12,8 +12,8 @@ export default function GameController() {
 
     const [mainStats, setMainStats] = useState(defaultMainStats)
     const [buildingsStats, setBuildingsStats] = useState(defaultBuildingStats)
+    const [mapGrid, setMapGrid] = useState(Array.from({ length: 15 }, () => Array.from({ length: 15 }, () => { return {id: 0, name: 'delete', effects: [] } })));
 
-    const [mapGrid, setMapGrid] = useState(Array.from({ length: 15 }, () => Array.from({ length: 15 }, () => { return { name: 'delete', effects: [] } })));
     var [selectedElement, setSelectedElement] = useState({ name: "pointer" })
     var auxiliarElement = {};
 
@@ -29,7 +29,8 @@ export default function GameController() {
 
     const setBlock = (xindex, yindex) => {
         if (selectedElement.name === 'pointer') return console.log(xindex, yindex, mapGrid[xindex][yindex])
-        if (cantBuild(xindex, yindex)) return;
+        if (cantBuild(xindex, yindex)) return;        
+        if (selectedElement.name === 'delete') return deleteBuilding(xindex, yindex);
         defineBuildingValues(xindex, yindex);
         return selectedElement.name;
     }
@@ -40,10 +41,15 @@ export default function GameController() {
     }
 
     const cantBuild = (xindex, yindex) => {
-        if (mapGrid[xindex][yindex].name !== 'delete' && selectedElement !== 'delete') {
-            return true;
-        }
+        if (mapGrid[xindex][yindex].name !== 'delete' && selectedElement.name !== "delete") return true;
         return false;
+    }
+
+    const deleteBuilding = (xindex, yindex) => {
+        const effect_parent_id = mapGrid[xindex][yindex]?.id
+        if(effect_parent_id)  deleteEffects(effect_parent_id);
+        updateGrid(xindex, yindex, defaultMapBox)
+        return defaultMapBox.name
     }
 
     const updateHousesValues = () => {
@@ -58,14 +64,14 @@ export default function GameController() {
                 totalHapiness += residential.calculateHapiness()
             });
         }
-        const average_happiness_percentage = (totalHapiness / totalHouses)
+        const average_happiness_percentage = (totalHapiness / totalHouses===0?1:totalHouses)
         const newStats = mainStats
         newStats.population = totalPopulation;
         newStats.happiness = average_happiness_percentage.toFixed(1)
         setMainStats(newStats)
     }
 
-    const defineBuildingValues = (xindex, yindex) => {
+    const defineBuildingValues = (xindex, yindex) => {        
         switch (selectedElement.name) {
             case 'road':
                 auxiliarElement = newRoad()
@@ -163,7 +169,7 @@ export default function GameController() {
     }
 
     const setService = (xindex, yindex, cover_area, cover_service) => {
-        addEffects(xindex, yindex, cover_area, cover_service)
+        addEffects(xindex, yindex, cover_area, cover_service)        
         auxiliarElement.is_active = true
     }
 
@@ -189,6 +195,16 @@ export default function GameController() {
     const definePositionEffects = (targetEffects, sourceEffects) => {
         let combinedEffects = targetEffects.concat(sourceEffects)
         return combinedEffects;
+    }
+    
+    const deleteEffects = (effect_parent_id) => {
+        const clearEffects = mapGrid
+        clearEffects.forEach(row => {
+            row.forEach(mapBox => {
+                mapBox.effects = mapBox.effects.filter(obj => obj.parent_id !== effect_parent_id);
+            });
+        });
+        setMapGrid(clearEffects)
     }
 
     function addEffects(x, y, cover_area, effect) {

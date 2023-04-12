@@ -1,3 +1,4 @@
+export const defaultMapBox = { id: 0, name: 'delete', effects: [] }
 export const defaultMainStats = {
     level: 0,
     experience: 0,
