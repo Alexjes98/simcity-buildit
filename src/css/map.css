@@ -6,10 +6,10 @@
 .map-grid {
     display: flex;
     flex-direction: row;
-    border: 1px solid black;
+   
 }
 
 .map-box {
-    border: 1px solid black;
+    
     
 }

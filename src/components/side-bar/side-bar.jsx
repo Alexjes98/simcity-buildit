@@ -31,7 +31,7 @@ const sidebarNavItems = [
       { name: "road", icon: faRoad, value: 1},
       {
         name: "residential", icon: faHome, value: 2
-      },
+      }
 
     ]
   },
