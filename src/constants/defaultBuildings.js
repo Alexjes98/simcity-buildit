@@ -5,6 +5,7 @@ import { Service } from '../classes/service';
 import { __hash__ } from '../utils/utils';
 import { Effect } from '../classes/effect';
 import { Specialtie } from '../classes/specialties';
+import { Factory } from '../classes/factory';
 
 export function newRoad() {
     const id = __hash__();
@@ -95,4 +96,9 @@ export function newPark(){
     return new Specialtie(id,"non_activable_building",true,"park",0,[],
     "basic_park",4,new Effect(__hash__(), 20, id, 'specialty'), {experience: 10, price: 50}
     );
+}
+
+export function newFactory(){
+    const id = __hash__();
+    return new Factory(id,true,"factory",0,"non_activable_building",[],{experience: 10, price: 100})
 }

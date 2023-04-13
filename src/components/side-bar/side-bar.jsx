@@ -31,10 +31,7 @@ const sidebarNavItems = [
       { name: "road", icon: faRoad, value: 1},
       {
         name: "residential", icon: faHome, value: 2
-      },
-      {
-        name: "fabric", icon: faIndustry, value: 3
-      }// TODO ADD FABRIC AND GENERATE MATERIALS AND CONSTRUCTION EVENTS
+      }
 
     ]
   },

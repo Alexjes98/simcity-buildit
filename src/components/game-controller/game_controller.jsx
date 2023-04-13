@@ -6,13 +6,13 @@ import Sidebar from '../side-bar/side-bar';
 
 import { defaultBuildingStats, defaultMainStats, defaultMapBox } from '../../constants/constants';
 
-import { newCleanElectricity, newFireHouse, newHospital, newPark, newPoliceStation, newResidentialZone, newResidualWater, newRoad, newTrashPlant, newUncleanElectricity } from '../../constants/defaultBuildings';
+import { newCleanElectricity, newFactory, newFireHouse, newHospital, newPark, newPoliceStation, newResidentialZone, newResidualWater, newRoad, newTrashPlant, newUncleanElectricity } from '../../constants/defaultBuildings';
 
 export default function GameController() {
 
     const [mainStats, setMainStats] = useState(defaultMainStats)
     const [buildingsStats, setBuildingsStats] = useState(defaultBuildingStats)
-    const [mapGrid, setMapGrid] = useState(Array.from({ length: 15 }, () => Array.from({ length: 45 }, () => { return {id: 0, name: 'delete', effects: [] } })));
+    const [mapGrid, setMapGrid] = useState(Array.from({ length: 15 }, () => Array.from({ length: 45 }, () => { return { id: 0, name: 'delete', effects: [] } })));
 
     var [selectedElement, setSelectedElement] = useState({ name: "pointer" })
     var auxiliarElement = {};
@@ -29,7 +29,7 @@ export default function GameController() {
 
     const setBlock = (xindex, yindex) => {
         if (selectedElement.name === 'pointer') return console.log(xindex, yindex, mapGrid[xindex][yindex])
-        if (cantBuild(xindex, yindex)) return;        
+        if (cantBuild(xindex, yindex)) return;
         if (selectedElement.name === 'delete') return deleteBuilding(xindex, yindex);
         defineBuildingValues(xindex, yindex);
         return selectedElement.name;
@@ -47,7 +47,7 @@ export default function GameController() {
 
     const deleteBuilding = (xindex, yindex) => {
         const effect_parent_id = mapGrid[xindex][yindex]?.id
-        if(effect_parent_id)  deleteEffects(effect_parent_id);
+        if (effect_parent_id) deleteEffects(effect_parent_id);
         updateGrid(xindex, yindex, defaultMapBox)
         return defaultMapBox.name
     }
@@ -71,7 +71,7 @@ export default function GameController() {
         setMainStats(newStats)
     }
 
-    const defineBuildingValues = (xindex, yindex) => {        
+    const defineBuildingValues = (xindex, yindex) => {
         switch (selectedElement.name) {
             case 'road':
                 auxiliarElement = newRoad()
@@ -148,6 +148,10 @@ export default function GameController() {
                 setService(xindex, yindex, auxiliarElement.cover_area, auxiliarElement.cover_service)
                 setBuildingsStats({ ...buildingsStats, parks: buildingsStats.parks + 1 })
                 break;
+            case 'factory':
+                auxiliarElement = newFactory()
+                console.log(auxiliarElement)
+                break;            
             default:
                 break;
         }
@@ -169,7 +173,7 @@ export default function GameController() {
     }
 
     const setService = (xindex, yindex, cover_area, cover_service) => {
-        addEffects(xindex, yindex, cover_area, cover_service)        
+        addEffects(xindex, yindex, cover_area, cover_service)
         auxiliarElement.is_active = true
     }
 
@@ -196,7 +200,7 @@ export default function GameController() {
         let combinedEffects = targetEffects.concat(sourceEffects)
         return combinedEffects;
     }
-    
+
     const deleteEffects = (effect_parent_id) => {
         const clearEffects = mapGrid
         clearEffects.forEach(row => {
@@ -247,19 +251,15 @@ export default function GameController() {
             throw new Error("Index out of bounds");
         }
         const adjacentPositions = [{ object: {}, x: {}, y: {} }];
-        // check top position
         if (xindex > 0) {
             adjacentPositions.push({ object: mapGrid[xindex - 1][yindex], x: xindex - 1, y: yindex });
-        }
-        // check bottom position
+        }    
         if (xindex < mapGrid.length - 1) {
             adjacentPositions.push({ object: mapGrid[xindex + 1][yindex], x: xindex + 1, y: yindex });
-        }
-        // check left position
+        }    
         if (yindex > 0) {
             adjacentPositions.push({ object: mapGrid[xindex][yindex - 1], x: xindex, y: yindex - 1 });
         }
-        // check right position
         if (yindex < mapGrid[0].length - 1) {
             adjacentPositions.push({ object: mapGrid[xindex][yindex + 1], x: xindex, y: yindex + 1 });
         }
@@ -267,6 +267,7 @@ export default function GameController() {
     }
 
     return <div className='main-game-controller'>
+
         <Sidebar className="sidebar" events={{ setSelectedElement: changeSelectedElement }}></Sidebar>
         <StatsUI className='stats-main-row ' objProps={mainStats}></StatsUI>
         <Map className='map-container' mapGrid={mapGrid} events={{ eventHandler, setBlock }}></Map>
