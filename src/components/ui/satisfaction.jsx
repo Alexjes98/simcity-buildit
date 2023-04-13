@@ -1,50 +1,68 @@
 import React from "react";
 import {
-  faHome,
-  faIndustry,
-  faRoad,
-  faSnowplow,
-  faArrowPointer,
   faBuildingShield,
   faFireExtinguisher,
   faHeartPulse,
-  faDropletSlash,
+  faDroplet,
   faTrash,
   faPlugCirclePlus,
-  faPlugCircleExclamation,
-  faTree,
 } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-const Satisfaction = () => {
+
+const Satisfaction = ({ satisfaction }) => {
+  console.log("satisfaction.jsx");
+  console.log(satisfaction);
+
+  const icons = [
+    {
+      icon: faPlugCirclePlus,
+      label: "Electricity",
+      satisfied:
+        satisfaction.filter((s) => s.type === "electricity").length === 0,
+    },
+    {
+      icon: faDroplet,
+      label: "Water",
+      satisfied:
+        satisfaction.filter((s) => s.type === "residual-water").length === 0,
+    },
+    {
+      icon: faFireExtinguisher,
+      label: "Firehouse",
+      satisfied:
+        satisfaction.filter((s) => s.type === "firehouse").length === 0,
+    },
+    {
+      icon: faBuildingShield,
+      label: "Police",
+      satisfied: satisfaction.filter((s) => s.type === "police").length === 0,
+    },
+    {
+      icon: faHeartPulse,
+      label: "Health",
+      satisfied: satisfaction.filter((s) => s.type === "health").length === 0,
+    },
+    {
+      icon: faTrash,
+      label: "Cleanliness",
+      satisfied:
+        satisfaction.filter((s) => s.type === "cleanliness").length === 0,
+    },
+  ];
+
   return (
     <div className="satisfaction-container">
-      <div>
-        <FontAwesomeIcon
-          className="satisfaction-icon"
-          icon={faPlugCirclePlus}
-          size="2x"
-          color="red"
-        />
-        <div>Electricity</div>
-      </div>
-      <div>
-        <FontAwesomeIcon
-          className="satisfaction-icon"
-          icon={faFireExtinguisher}
-          size="2x"
-          color="red"
-        />
-        <div>Firehouse</div>
-      </div>
-      <div>
-        <FontAwesomeIcon
-          className="satisfaction-icon"
-          icon={faBuildingShield}
-          size="2x"
-          color="red"
-        />
-        <div>Police</div>
-      </div>
+      {icons.map(({ icon, label, satisfied }) => (
+        <div key={label}>
+          <FontAwesomeIcon
+            className="satisfaction-icon"
+            icon={icon}
+            size="2x"
+            color={satisfied ? "green" : "red"}
+          />
+          <div>{label}</div>
+        </div>
+      ))}
     </div>
   );
 };

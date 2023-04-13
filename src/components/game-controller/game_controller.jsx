@@ -7,10 +7,13 @@ import Sidebar from '../side-bar/side-bar';
 import { defaultBuildingStats, defaultMainStats, defaultMapBox } from '../../constants/constants';
 
 import { newCleanElectricity, newFactory, newFireHouse, newHospital, newPark, newPoliceStation, newResidentialZone, newResidualWater, newRoad, newTrashPlant, newUncleanElectricity } from '../../constants/defaultBuildings';
+import Satisfaction from '../ui/satisfaction';
+import { ResidentialZone } from '../../classes/residential-zone';
 
 export default function GameController() {
 
     const [mainStats, setMainStats] = useState(defaultMainStats)
+    const [satisfaction, setSatisfaction] = useState([])
     const [buildingsStats, setBuildingsStats] = useState(defaultBuildingStats)
     const [mapGrid, setMapGrid] = useState(Array.from({ length: 15 }, () => Array.from({ length: 45 }, () => { return { id: 0, name: 'delete', effects: [] } })));
 
@@ -19,6 +22,7 @@ export default function GameController() {
 
     useEffect(() => {
         updateHousesValues()
+        notCoveredServices()
     }, [buildingsStats, mainStats])
 
     const changeSelectedElement = (element) => {
@@ -246,6 +250,16 @@ export default function GameController() {
 
     }
 
+    function notCoveredServices(){
+        
+        const houses= mapGrid.flatMap((row)=>row).filter((item)=>item instanceof ResidentialZone)
+        const notCoveredServices = (houses.filter((house)=>house.notCoveredServices()).flatMap((house)=>house.notCoveredServices())).filter(
+            (obj, index, self) =>
+              index === self.findIndex((t) => t.type === obj.type)
+          ) ;
+        setSatisfaction(notCoveredServices)
+    }
+
     function checkAdjacentPositions(xindex, yindex) {
         if (xindex < 0 || xindex >= mapGrid.length || yindex < 0 || yindex >= mapGrid[0].length) {
             throw new Error("Index out of bounds");
@@ -271,6 +285,7 @@ export default function GameController() {
         <Sidebar className="sidebar" events={{ setSelectedElement: changeSelectedElement }}></Sidebar>
         <StatsUI className='stats-main-row ' objProps={mainStats}></StatsUI>
         <Map className='map-container' mapGrid={mapGrid} events={{ eventHandler, setBlock }}></Map>
+        <Satisfaction satisfaction={satisfaction} />
     </div>
 
 }

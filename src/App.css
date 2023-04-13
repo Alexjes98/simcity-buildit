@@ -1,6 +1,7 @@
 @import url('./css/stats.css');
 @import url('./css/map.css');
 @import url('./css/sidebar.css');
+@import url('./css/satisfaction.css');
 
 .main-game-controller{
   position: absolute;
