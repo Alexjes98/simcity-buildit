@@ -1,0 +1,9 @@
+.satisfaction-container {
+  display: flex;
+  gap: 16px;
+  margin-top: 20px;
+}
+
+.satisfaction-icon {
+  padding: 2px;
+}
