@@ -12,7 +12,7 @@ export default function GameController() {
 
     const [mainStats, setMainStats] = useState(defaultMainStats)
     const [buildingsStats, setBuildingsStats] = useState(defaultBuildingStats)
-    const [mapGrid, setMapGrid] = useState(Array.from({ length: 15 }, () => Array.from({ length: 15 }, () => { return {id: 0, name: 'delete', effects: [] } })));
+    const [mapGrid, setMapGrid] = useState(Array.from({ length: 15 }, () => Array.from({ length: 45 }, () => { return {id: 0, name: 'delete', effects: [] } })));
 
     var [selectedElement, setSelectedElement] = useState({ name: "pointer" })
     var auxiliarElement = {};
@@ -267,7 +267,6 @@ export default function GameController() {
     }
 
     return <div className='main-game-controller'>
-
         <Sidebar className="sidebar" events={{ setSelectedElement: changeSelectedElement }}></Sidebar>
         <StatsUI className='stats-main-row ' objProps={mainStats}></StatsUI>
         <Map className='map-container' mapGrid={mapGrid} events={{ eventHandler, setBlock }}></Map>
