@@ -10,9 +10,6 @@ import {
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 const Satisfaction = ({ satisfaction }) => {
-  console.log("satisfaction.jsx");
-  console.log(satisfaction);
-
   const icons = [
     {
       icon: faPlugCirclePlus,

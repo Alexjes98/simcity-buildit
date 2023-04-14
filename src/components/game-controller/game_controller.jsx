@@ -15,7 +15,7 @@ export default function GameController() {
     const [mainStats, setMainStats] = useState(defaultMainStats)
     const [satisfaction, setSatisfaction] = useState([])
     const [buildingsStats, setBuildingsStats] = useState(defaultBuildingStats)
-    const [mapGrid, setMapGrid] = useState(Array.from({ length: 15 }, () => Array.from({ length: 45 }, () => { return { id: 0, name: 'delete', effects: [] } })));
+    const [mapGrid, setMapGrid] = useState(Array.from({ length: 23 }, () => Array.from({ length: 50 }, () => { return { id: 0, name: 'delete', effects: [] } })));
 
     var [selectedElement, setSelectedElement] = useState({ name: "pointer" })
     var auxiliarElement = {};
@@ -251,7 +251,6 @@ export default function GameController() {
     }
 
     function notCoveredServices(){
-        
         const houses= mapGrid.flatMap((row)=>row).filter((item)=>item instanceof ResidentialZone)
         const notCoveredServices = (houses.filter((house)=>house.notCoveredServices()).flatMap((house)=>house.notCoveredServices())).filter(
             (obj, index, self) =>

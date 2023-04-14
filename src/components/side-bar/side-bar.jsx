@@ -62,12 +62,6 @@ const sidebarNavItems = [
     ]
   },
   {
-    display: 'Inventary',
-    menuItems: [
-    ]
-  },
-
-  {
     display: 'Specialities',
     menuItems: [
       {
