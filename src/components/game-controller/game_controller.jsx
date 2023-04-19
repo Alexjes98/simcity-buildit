@@ -68,7 +68,7 @@ export default function GameController() {
                 totalHapiness += residential.calculateHapiness()
             });
         }
-        const average_happiness_percentage = (totalHapiness / totalHouses)
+        const average_happiness_percentage = isNaN((totalHapiness / totalHouses))? 0 : (totalHapiness / totalHouses)
         const newStats = mainStats
         newStats.population = totalPopulation;
         newStats.happiness = average_happiness_percentage.toFixed(1)
