@@ -5,10 +5,11 @@
 
 .main-game-controller{
   position: absolute;
-  top: 50px;
-  left: 160px;
+  top: 31px;
+  left: 151px;
   right: 0;
   bottom: 0;
   padding: 20px;
+  width: 100%;
   overflow: auto;
 }

@@ -1,9 +1,18 @@
 .satisfaction-container {
+  width: 100%;
   display: flex;
-  gap: 16px;
-  margin-top: 20px;
+  flex-direction: row;
+  justify-content: space-between;
+  background-color: darkgray;
+  display: flex;  
+  padding: 15px;
 }
 
 .satisfaction-icon {
-  padding: 2px;
+  font-size: 24px;
+  transition: color 0.3s ease; 
+}
+
+.satisfaction-icon:hover {
+  color: #007BFF;
 }

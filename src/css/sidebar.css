@@ -4,12 +4,13 @@
     left: 0;
     bottom: 0;
     width: 170px;
+    height: 100%;
     padding: 20px;
     background-color: gray;
     color: orange;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
     transition: transform 0.3s ease-in-out;
-    z-index: 1;
+    z-index: 999;
 }
 .menu-icon{
     padding: 2px;

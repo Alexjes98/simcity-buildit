@@ -6,8 +6,7 @@ import GameController from './components/game-controller/game_controller';
 function App() {
   return (
     <div className="App">
-      <GameController>
-      </GameController>
+      <GameController />      
     </div>
   );
 }

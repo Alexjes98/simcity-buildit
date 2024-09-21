@@ -50,14 +50,29 @@ const Satisfaction = ({ satisfaction }) => {
   return (
     <div className="satisfaction-container">
       {icons.map(({ icon, label, satisfied }) => (
-        <div key={label}>
+        <div key={label}
+        style={
+          {
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",                        
+          }
+        }
+        >
           <FontAwesomeIcon
             className="satisfaction-icon"
             icon={icon}
             size="2x"
             color={satisfied ? "green" : "red"}
           />
-          <div>{label}</div>
+          <div
+          style={
+            {
+              fontWeight: "bold"
+            }
+          }
+          >{label}</div>
         </div>
       ))}
     </div>
